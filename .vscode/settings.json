@@ -1,9 +1,0 @@
-{
-    "python.pythonPath": ".venv\\Scripts\\python.exe",
-    "python.linting.pylintEnabled": true,
-    "python.linting.enabled": true,
-    "python.linting.pylintArgs": [
-        "--extension-pkg-whitelist=pygame",
-        "--disable=C0103"
-    ]
-}
