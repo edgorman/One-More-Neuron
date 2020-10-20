@@ -115,7 +115,6 @@ class Game:
 
                     for block in self.blocks:
                         # check ball hitting blocks -> https://stackoverflow.com/a/402010
-
                         block_center_x, block_center_y = block.get_center_position()
                         block_distance_x, block_distance_y = (
                             abs(new_x - block_center_x),
@@ -144,8 +143,10 @@ class Game:
                             # block is intersecting a corner
                             ball.set_spawned()
                             block.hit_ball()
-                            ball.invert_x_velocity()
-                            ball.invert_y_velocity()
+                            if block_distance_x > block_distance_y:
+                                ball.invert_x_velocity()
+                            else:
+                                ball.invert_y_velocity()
                             new_x, new_y = ball.get_new_position()
 
                     if ball.get_health() <= 0:
