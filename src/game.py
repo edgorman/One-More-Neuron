@@ -130,13 +130,11 @@ class Game:
                             ball.set_spawned()
                             block.hit_ball()
                             ball.invert_y_velocity()
-                            new_x, new_y = ball.get_new_position()
                         elif block_distance_y <= (BLOCK_HEIGHT/2):
                             # block is intersection in y direction
                             ball.set_spawned()
                             block.hit_ball()
                             ball.invert_x_velocity()
-                            new_x, new_y = ball.get_new_position()
                         elif ((block_distance_x - BLOCK_WIDTH/2)**2 + \
                             (block_distance_y - BLOCK_HEIGHT/2)**2) <= \
                             (ball.get_radius()**2):
@@ -147,11 +145,11 @@ class Game:
                                 ball.invert_x_velocity()
                             else:
                                 ball.invert_y_velocity()
-                            new_x, new_y = ball.get_new_position()
 
                     if ball.get_health() <= 0:
                         self.balls.remove(ball)
                     else:
+                        new_x, new_y = ball.get_new_position()
                         ball.set_position((new_x, new_y))
 
             # Update blocks
