@@ -16,7 +16,6 @@ class Ball:
         self.health = 1
         self.magnitude = -10
         self.velocity = (1, 1)
-        self.spawned = False
         self.delay = 0
 
     def get_position(self):
@@ -50,10 +49,6 @@ class Ball:
         """ Return the delay of the ball """
         return self.delay
 
-    def is_spawned(self):
-        """ Return whether ball has finished spawning """
-        return self.spawned
-
     def invert_x_velocity(self):
         """ Invert the velocity in the x direction """
         self.velocity = (self.velocity[0] * -1, self.velocity[1])
@@ -70,22 +65,16 @@ class Ball:
         """ Set the velocity of the ball """
         self.velocity = (self.magnitude * x, self.magnitude * y)
 
-    def set_spawned(self):
-        """ Set ball span to true """
-        self.spawned = True
-
     def set_delay(self, time):
         """ Set the delay before moving """
         self.delay = time + (100 * self.index)
 
     def hit_floor(self):
         """ Reduce health of the ball """
-        if self.spawned:
-            self.health -= 1
+        self.health -= 1
 
     def reset(self):
         """ Reset the ball to the origin """
         self.set_velocity(0, 0)
         self.set_position((self.origin_x, self.origin_y))
         self.health = 1
-        self.spawned = False

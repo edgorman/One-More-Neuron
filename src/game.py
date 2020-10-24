@@ -92,27 +92,16 @@ class Game:
                     if (new_x - ball_r <= 0 or new_x + ball_r >= max_x) and \
                     (new_y - ball_r <= 0 or new_y + ball_r >= max_y):
                         # ball hit corner of screen
-                        ball.set_spawned()
                         ball.invert_x_velocity()
                         ball.invert_y_velocity()
-                        new_x, new_y = ball.get_new_position()
                     elif new_x - ball_r <= 0 or new_x + ball_r >= max_x:
                         # ball hit left or right sides of screen
-                        ball.set_spawned()
                         ball.invert_x_velocity()
-                        new_x, new_y = ball.get_new_position()
                     elif new_y - ball_r <= 0 or new_y + ball_r >= max_y:
                         # ball hit top or bottom sides of screen
-                        if ball.is_spawned():
-                            if new_y + ball_r >= max_y:
-                                ball.hit_floor()
-                            ball.invert_y_velocity()
-                            new_x, new_y = ball.get_new_position()
-                        else:
-                            if new_y - ball_r <= 0:
-                                ball.set_spawned()
-                                ball.invert_y_velocity()
-                                new_x, new_y = ball.get_new_position()
+                        if new_y + ball_r >= max_y:
+                            ball.hit_floor()
+                        ball.invert_y_velocity()
 
                     for block in self.blocks:
                         # check ball hitting blocks -> https://stackoverflow.com/a/402010
@@ -128,19 +117,16 @@ class Game:
                             continue
                         elif block_distance_x <= (BLOCK_WIDTH/2):
                             # ball is intersecting in x direction
-                            ball.set_spawned()
                             block.hit_ball()
                             ball.invert_y_velocity()
                         elif block_distance_y <= (BLOCK_HEIGHT/2):
                             # block is intersection in y direction
-                            ball.set_spawned()
                             block.hit_ball()
                             ball.invert_x_velocity()
                         elif ((block_distance_x - BLOCK_WIDTH/2)**2 + \
                             (block_distance_y - BLOCK_HEIGHT/2)**2) <= \
                             (ball.get_radius()**2):
                             # block is intersecting a corner
-                            ball.set_spawned()
                             block.hit_ball()
                             if block_distance_x > block_distance_y:
                                 ball.invert_x_velocity()
