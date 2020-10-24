@@ -64,7 +64,7 @@ class ReinforcementLearning(Agent):
 
         # Reward number of blocks hit per ball
         for ball in ball_info:
-            reward += ball.hit_count()
+            reward += ball.get_hit_count()
 
         # Update q value with reward
         env_array = self.get_env_state(block_info)
