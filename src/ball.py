@@ -7,6 +7,8 @@ class Ball:
     def __init__(self, x, y, d, i, c):
         self.x = x
         self.y = y
+        self.origin_x = x
+        self.origin_y = y
         self.radius = d
         self.index = i
         self.colour = c
@@ -80,3 +82,8 @@ class Ball:
         """ Reduce health of the ball """
         if self.spawned:
             self.health -= 1
+
+    def reset(self):
+        """ Reset the ball to the origin """
+        self.set_velocity(0, 0)
+        self.set_position((self.origin_x, self.origin_y))
