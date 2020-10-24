@@ -87,3 +87,5 @@ class Ball:
         """ Reset the ball to the origin """
         self.set_velocity(0, 0)
         self.set_position((self.origin_x, self.origin_y))
+        self.health = 1
+        self.spawned = False

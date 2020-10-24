@@ -35,6 +35,7 @@ class Game:
         self.size = (SCREEN_WIDTH, SCREEN_HEIGHT)
         self.blocks = []
         self.balls = []
+        self.balls_left = 0
         self.level = l
         self.level_active = False
 
@@ -81,7 +82,7 @@ class Game:
             # Level is active
 
             # Update balls
-            for ball in list(self.balls):
+            for ball in self.balls:
                 if ball.get_delay() <= pygame.time.get_ticks():
                     # ball has pased delay
                     new_x, new_y = ball.get_new_position()
@@ -147,7 +148,8 @@ class Game:
                                 ball.invert_y_velocity()
 
                     if ball.get_health() <= 0:
-                        self.balls.remove(ball)
+                        ball.reset()
+                        self.balls_left -= 1
                     else:
                         new_x, new_y = ball.get_new_position()
                         ball.set_position((new_x, new_y))
@@ -157,22 +159,22 @@ class Game:
                 if block.get_health() <= 0:
                     self.blocks.remove(block)
 
-        if len(self.balls) <= 0:
+        if self.balls_left <= 0:
             # Level has finished
             self.level += 1
             self.level_active = False
 
-            # Generate new balls
-            for index in range(self.level):
-                self.balls.append(
-                    Ball(
-                        BALL_START_X,
-                        BALL_START_Y,
-                        BALL_RADIUS,
-                        index,
-                        (255, 255, 255)
-                    )
+            # Generate new ball
+            self.balls.append(
+                Ball(
+                    BALL_START_X,
+                    BALL_START_Y,
+                    BALL_RADIUS,
+                    self.level,
+                    (255, 255, 255)
                 )
+            )
+            self.balls_left = len(self.balls)
 
             # Generate new blocks
             for index in range(BLOCK_WIDTH_MAX):
