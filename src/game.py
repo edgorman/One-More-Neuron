@@ -25,7 +25,7 @@ BLOCK_SPAWN_THRESHOLD = 0.75
 class Game:
     """ This is the Game class """
 
-    def __init__(self, l=0):
+    def __init__(self, agent=None, level=0):
         self._clock = None
         self._elapsed = 0
         self._running = True
@@ -33,10 +33,11 @@ class Game:
         self._score_surf = None
 
         self.size = (SCREEN_WIDTH, SCREEN_HEIGHT)
+        self.agent = agent
         self.blocks = []
         self.balls = []
         self.balls_left = 0
-        self.level = l
+        self.level = level
         self.level_active = False
 
     def on_init(self):
