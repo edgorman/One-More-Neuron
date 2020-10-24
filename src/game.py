@@ -117,16 +117,19 @@ class Game:
                             continue
                         elif block_distance_x <= (BLOCK_WIDTH/2):
                             # ball is intersecting in x direction
+                            ball.hit_block()
                             block.hit_ball()
                             ball.invert_y_velocity()
                         elif block_distance_y <= (BLOCK_HEIGHT/2):
                             # block is intersection in y direction
+                            ball.hit_block()
                             block.hit_ball()
                             ball.invert_x_velocity()
                         elif ((block_distance_x - BLOCK_WIDTH/2)**2 + \
                             (block_distance_y - BLOCK_HEIGHT/2)**2) <= \
                             (ball.get_radius()**2):
                             # block is intersecting a corner
+                            ball.hit_block()
                             block.hit_ball()
                             if block_distance_x > block_distance_y:
                                 ball.invert_x_velocity()
@@ -161,6 +164,8 @@ class Game:
                 )
             )
             self.balls_left = len(self.balls)
+            for ball in self.balls:
+                ball.reset_hit_count()
 
             # Generate new blocks
             for index in range(BLOCK_WIDTH_MAX):

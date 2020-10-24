@@ -14,6 +14,7 @@ class Ball:
         self.colour = c
 
         self.health = 1
+        self.hit_count = 0
         self.magnitude = -10
         self.velocity = (1, 1)
         self.delay = 0
@@ -42,8 +43,12 @@ class Ball:
         return self.velocity
 
     def get_health(self):
-        """ Return the health of the balll """
+        """ Return the health of the ball """
         return self.health
+
+    def get_hit_count(self):
+        """ Return the hit count of the ball """
+        return self.hit_count
 
     def get_delay(self):
         """ Return the delay of the ball """
@@ -73,8 +78,16 @@ class Ball:
         """ Reduce health of the ball """
         self.health -= 1
 
+    def hit_block(self):
+        """ Increment the hit counter """
+        self.hit_count += 1
+
     def reset(self):
         """ Reset the ball to the origin """
         self.set_velocity(0, 0)
         self.set_position((self.origin_x, self.origin_y))
         self.health = 1
+
+    def reset_hit_count(self):
+        """ Reset the hit count of the ball """
+        self.hit_count = 0
