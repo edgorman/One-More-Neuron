@@ -284,11 +284,22 @@ class Game:
 
         # Draw text onto screen
         score_surface = self._score_surf.render(
-            "One More Neuron; Level: " + str(self.level),
+            "One More Neuron;     Level: " + str(self.level),
             False,
             (255, 255, 255)
         )
         self._display_surf.blit(score_surface, (15, SCREEN_HEIGHT - 35))
+
+        # Draw agent text on screen
+        if self.agent is not None:
+            agent_surface = self._score_surf.render(
+                "Agent Name: " + str(self.agent.get_name()) \
+                + ";     Game #: " + str(self.agent.get_games_complete()) \
+                + ";     Last Reward: " + str(self.agent.get_last_reward()),
+                False,
+                (255, 255, 255)
+            )
+            self._display_surf.blit(agent_surface, (SCREEN_WIDTH - 550, SCREEN_HEIGHT - 35))
 
         # Updates the screen
         pygame.display.flip()

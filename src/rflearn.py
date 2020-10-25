@@ -8,16 +8,33 @@ class ReinforcementLearning(Agent):
     """ This is the Reinforcement Learning class """
     # https://colab.research.google.com/drive/1E2RViy7xmor0mhqskZV14_NUj2jMpJz3
 
-    def __init__(self, episode=10, env_rows=9, env_cols=16):
+    def __init__(self, episode=2, env_rows=9, env_cols=16):
+        self._name = "Reinforcement Learning"
+
         self.episode = episode
+        self.env_rows = env_rows
+        self.env_cols = env_cols
+        self.games_complete = 0
+        self.last_reward = 0
+
         self.epsilon = 0.3
         self.dis_fact = 0.9
         self.learn_rate = 0.9
-        self.env_rows = env_rows
-        self.env_cols = env_cols
 
         self.actions = [x for x in range(10, 180, 10)]
         self.q_values = np.zeros((self.env_rows * self.env_cols, len(self.actions)), dtype=np.int8)
+
+    def get_name(self):
+        """ Return the name of the agent """
+        return self._name
+
+    def get_games_complete(self):
+        """ Return the number of games the agent has completed """
+        return self.games_complete
+
+    def get_last_reward(self):
+        """ Return the value of the last reward stored """
+        return self.last_reward
 
     def get_env_state(self, block_info):
         """ Return the state of the env as a 1D array """
@@ -68,6 +85,7 @@ class ReinforcementLearning(Agent):
         # Reward number of blocks hit per ball
         for ball in ball_info:
             reward += ball.get_hit_count()
+        self.last_reward = reward
 
         # Update q value with reward
         env_array = self.get_env_state(block_info)
