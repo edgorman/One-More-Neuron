@@ -164,8 +164,6 @@ class Game:
                 )
             )
             self.balls_left = len(self.balls)
-            for ball in self.balls:
-                ball.reset_hit_count()
 
             # Generate new blocks
             for index in range(BLOCK_WIDTH_MAX):
