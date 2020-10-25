@@ -221,7 +221,7 @@ class Game:
             _, y = block.get_position()
             if y >= BLOCK_HEIGHT_MAX:
                 # End game
-                if self.agent is not None:
+                if self.agent is not None and self.level != 0:
                     # If agent training not complete
                     if self.agent.on_game_finish():
                         self.blocks = []
@@ -295,12 +295,13 @@ class Game:
         if self.agent is not None:
             agent_surface = self._score_surf.render(
                 "Agent Name: " + str(self.agent.get_name()) \
-                + ";     Game #: " + str(self.agent.get_games_complete()) \
+                + ";     Game: " + str(self.agent.get_games_complete()) \
+                + "/" + str(self.agent.get_episodes_left() + self.agent.get_games_complete()) \
                 + ";     Last Reward: " + str(self.agent.get_last_reward()),
                 False,
                 (255, 255, 255)
             )
-            self._display_surf.blit(agent_surface, (SCREEN_WIDTH - 550, SCREEN_HEIGHT - 35))
+            self._display_surf.blit(agent_surface, (SCREEN_WIDTH - 575, SCREEN_HEIGHT - 35))
 
         # Updates the screen
         pygame.display.flip()

@@ -8,8 +8,8 @@ class ReinforcementLearning(Agent):
     """ This is the Reinforcement Learning class """
     # https://colab.research.google.com/drive/1E2RViy7xmor0mhqskZV14_NUj2jMpJz3
 
-    def __init__(self, episode=2, env_rows=9, env_cols=16):
-        self._name = "Reinforcement Learning"
+    def __init__(self, episode=3, env_rows=9, env_cols=16):
+        self._name = "RF"
 
         self.episode = episode
         self.env_rows = env_rows
@@ -27,6 +27,10 @@ class ReinforcementLearning(Agent):
     def get_name(self):
         """ Return the name of the agent """
         return self._name
+
+    def get_episodes_left(self):
+        """ Return the number of episodes left """
+        return self.episode
 
     def get_games_complete(self):
         """ Return the number of games the agent has completed """
@@ -69,6 +73,7 @@ class ReinforcementLearning(Agent):
         """ this method is called each time a game is finished """
         # Return whether a new round should be started
         self.episode -= 1
+        self.games_complete += 1
         return self.episode > 0
 
     def on_round_end(self, block_info, ball_info, action):
@@ -90,6 +95,7 @@ class ReinforcementLearning(Agent):
         # Update q value with reward
         env_array = self.get_env_state(block_info)
         action_index = self.actions.index(action)
-        self.q_values[env_array, action_index] = self.q_values[env_array, action_index] + self.learn_rate \
+        self.q_values[env_array, action_index] = \
+            self.q_values[env_array, action_index] + self.learn_rate \
             * (reward + (self.dis_fact * np.max(self.q_values[env_array])) \
             - self.q_values[env_array, action_index])
