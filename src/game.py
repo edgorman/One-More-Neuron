@@ -157,10 +157,8 @@ class Game:
             if self.agent is not None:
                 # Get input from agent
                 self.agent_action = self.agent.on_round_start(self.blocks)
-                print(self.agent_action)
                 shot_rad = math.radians(self.agent_action)
                 shot_vec = pygame.math.Vector2(math.cos(shot_rad), math.sin(shot_rad))
-                # shot_vec.rotate_ip(-180)
                 shot_vec.normalize_ip()
 
                 start_time = pygame.time.get_ticks()
@@ -209,12 +207,13 @@ class Game:
             for block in self.blocks:
                 block.move_down()
 
-            # Update agent
-            self.agent.on_round_end(
-                self.blocks,
-                self.balls,
-                self.agent_action
-            )
+            if self.agent is not None:
+                # Update agent
+                self.agent.on_round_end(
+                    self.blocks,
+                    self.balls,
+                    self.agent_action
+                )
 
         # Check if a block has reached the end
         for block in self.blocks:
@@ -222,8 +221,16 @@ class Game:
             if y >= BLOCK_HEIGHT_MAX:
                 # End game
                 if self.agent is not None:
-                    self.agent.on_game_finish()
-                self._running = False
+                    # If agent training not complete
+                    if self.agent.on_game_finish():
+                        self.blocks = []
+                        self.balls = []
+                        self.balls_left = 0
+                        self.level = 0
+                    else:
+                        self._running = False
+                else:
+                    self._running = False
 
 
     def on_render(self):
