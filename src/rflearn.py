@@ -1,5 +1,6 @@
 """ Reinforcement Learning file
 """
+import os
 import numpy as np
 from .agent import Agent
 
@@ -8,8 +9,9 @@ class ReinforcementLearning(Agent):
     """ This is the Reinforcement Learning class """
     # https://colab.research.google.com/drive/1E2RViy7xmor0mhqskZV14_NUj2jMpJz3
 
-    def __init__(self, episode=3, env_rows=9, env_cols=16):
+    def __init__(self, use_cache=True, episode=3, env_rows=9, env_cols=16):
         self._name = "RF"
+        self._use_cache = use_cache
 
         self.episode = episode
         self.env_rows = env_rows
@@ -22,7 +24,21 @@ class ReinforcementLearning(Agent):
         self.learn_rate = 0.9
 
         self.actions = [x for x in range(10, 180, 10)]
-        self.q_values = np.zeros((self.env_rows * self.env_cols, len(self.actions)), dtype=np.int8)
+        self.q_values = self.load_data()
+
+    def load_data(self, file=os.getcwd()+'\\data\\rf_q_values.npy'):
+        """ Load the data or create a blank q table """
+        if self._use_cache:
+            try:
+                return np.load(file)
+            except IOError:
+                print("Error: File '", file, "' does not exist, creating new table.")
+
+        return np.zeros((self.env_rows * self.env_cols, len(self.actions)), dtype=np.int8)
+
+    def save_data(self, file=os.getcwd()+'\\data\\rf_q_values.npy'):
+        """ Save the data to the file passed """
+        np.save(file, self.q_values)
 
     def get_name(self):
         """ Return the name of the agent """
@@ -65,8 +81,10 @@ class ReinforcementLearning(Agent):
 
         # Determine next move
         if np.random.random() < self.epsilon:
+            # Exploitation
             return self.actions[np.argmax(self.q_values[env_array])]
         else:
+            # Exploration
             return self.actions[np.random.randint(len(self.actions))]
 
     def on_game_finish(self):

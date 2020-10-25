@@ -221,15 +221,16 @@ class Game:
             _, y = block.get_position()
             if y >= BLOCK_HEIGHT_MAX:
                 # End game
-                if self.agent is not None and self.level != 0:
-                    # If agent training not complete
-                    if self.agent.on_game_finish():
-                        self.blocks = []
-                        self.balls = []
-                        self.balls_left = 0
-                        self.level = 0
-                    else:
-                        self._running = False
+                if self.agent is not None:
+                    if self.blocks != []:
+                        # If agent training not complete
+                        if self.agent.on_game_finish():
+                            self.blocks = []
+                            self.balls = []
+                            self.balls_left = 0
+                            self.level = 0
+                        else:
+                            self._running = False
                 else:
                     self._running = False
 
@@ -325,4 +326,6 @@ class Game:
             self.on_render()
 
         # Exit game
+        if self.agent is not None:
+            self.agent.save_data()
         self.on_cleanup()
