@@ -6,27 +6,30 @@ from .agent import Agent
 
 class ReinforcementLearning(Agent):
     """ This is the Reinforcement Learning class """
-    # https://colab.research.google.com/drive/1E2RViy7xmor0mhqskZV14_NUj2jMpJz3#scrollTo=DnCfO5tVG0LJ
+    # https://colab.research.google.com/drive/1E2RViy7xmor0mhqskZV14_NUj2jMpJz3
 
     def __init__(self, episode=10, env_rows=9, env_cols=16):
         self.episode = episode
-        self.epsilon = 0.9
+        self.epsilon = 0.3
         self.dis_fact = 0.9
         self.learn_rate = 0.9
         self.env_rows = env_rows
         self.env_cols = env_cols
 
         self.actions = [x for x in range(10, 180, 10)]
-        self.q_values = np.zeros((self.env_rows * self.env_cols, len(self.actions)))
+        self.q_values = np.zeros((self.env_rows * self.env_cols, len(self.actions)), dtype=np.int8)
 
     def get_env_state(self, block_info):
         """ Return the state of the env as a 1D array """
         # Convert environment to 1D array
-        env_array = np.zeros((self.env_rows * self.env_cols))
+        env_array = np.zeros((self.env_rows * self.env_cols), dtype=np.int8)
         last_block_pos = 0
         for block in block_info:
             x, y = block.get_position()
             curr_block_pos = (y * self.env_cols) + x
+
+            if curr_block_pos >= self.env_rows * self.env_cols:
+                break
 
             empty_indexes = [i for i in range(last_block_pos, curr_block_pos)]
             last_block_pos = curr_block_pos
@@ -41,7 +44,7 @@ class ReinforcementLearning(Agent):
 
         # Determine next move
         if np.random.random() < self.epsilon:
-            return np.argmax(self.q_values[env_array])
+            return self.actions[np.argmax(self.q_values[env_array])]
         else:
             return self.actions[np.random.randint(len(self.actions))]
 
@@ -68,7 +71,7 @@ class ReinforcementLearning(Agent):
 
         # Update q value with reward
         env_array = self.get_env_state(block_info)
-        self.q_values[env_array, action] += self.learn_rate \
-            * (reward \
-            + (self.dis_fact * np.max(self.q_values[env_array])) \
-            - self.q_values[env_array, action])
+        action_index = self.actions.index(action)
+        self.q_values[env_array, action_index] = self.q_values[env_array, action_index] + self.learn_rate \
+            * (reward + (self.dis_fact * np.max(self.q_values[env_array])) \
+            - self.q_values[env_array, action_index])

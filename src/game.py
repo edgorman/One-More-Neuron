@@ -1,5 +1,6 @@
 """Game File
 """
+import math
 import random
 import pygame
 from .block import Block
@@ -33,12 +34,14 @@ class Game:
         self._score_surf = None
 
         self.size = (SCREEN_WIDTH, SCREEN_HEIGHT)
-        self.agent = agent
         self.blocks = []
         self.balls = []
         self.balls_left = 0
         self.level = level
         self.level_active = False
+
+        self.agent = agent
+        self.agent_action = None
 
     def on_init(self):
         """ this method is called on initialisation """
@@ -66,7 +69,7 @@ class Game:
                 ball_vec = pygame.math.Vector2(BALL_START_X, BALL_START_Y)
                 mouse_vec = pygame.math.Vector2(pygame.mouse.get_pos())
                 shot_vec = pygame.math.Vector2(ball_vec - mouse_vec)
-                shot_vec = shot_vec.normalize()
+                shot_vec.normalize_ip()
 
                 start_time = pygame.time.get_ticks()
                 x, y = shot_vec[0], shot_vec[1]
@@ -148,6 +151,25 @@ class Game:
             for block in list(self.blocks):
                 if block.get_health() <= 0:
                     self.blocks.remove(block)
+        else:
+            # Level is not active
+
+            if self.agent is not None:
+                # Get input from agent
+                self.agent_action = self.agent.on_round_start(self.blocks)
+                print(self.agent_action)
+                shot_rad = math.radians(self.agent_action)
+                shot_vec = pygame.math.Vector2(math.cos(shot_rad), math.sin(shot_rad))
+                # shot_vec.rotate_ip(-180)
+                shot_vec.normalize_ip()
+
+                start_time = pygame.time.get_ticks()
+                x, y = shot_vec[0], shot_vec[1]
+                for ball in self.balls:
+                    ball.set_velocity(x, y)
+                    ball.set_delay(start_time)
+
+                self.level_active = True
 
         if self.balls_left <= 0:
             # Level has finished
@@ -187,11 +209,20 @@ class Game:
             for block in self.blocks:
                 block.move_down()
 
+            # Update agent
+            self.agent.on_round_end(
+                self.blocks,
+                self.balls,
+                self.agent_action
+            )
+
         # Check if a block has reached the end
         for block in self.blocks:
             _, y = block.get_position()
             if y >= BLOCK_HEIGHT_MAX:
                 # End game
+                if self.agent is not None:
+                    self.agent.on_game_finish()
                 self._running = False
 
 
@@ -267,8 +298,9 @@ class Game:
             # Run game and render loop
             self._clock.tick(GAME_TICK_SPEED)
 
-            for event in pygame.event.get():
-                self.on_event(event)
+            if self.agent is None:
+                for event in pygame.event.get():
+                    self.on_event(event)
             self.on_update()
             self.on_render()
 
