@@ -15,6 +15,7 @@ class Ball:
 
         self.health = 1
         self.hit_count = 0
+        self.old_hit_count = 0
         self.magnitude = -10
         self.velocity = (1, 1)
         self.delay = 0
@@ -48,7 +49,7 @@ class Ball:
 
     def get_hit_count(self):
         """ Return the hit count of the ball """
-        return self.hit_count
+        return self.old_hit_count
 
     def get_delay(self):
         """ Return the delay of the ball """
@@ -87,7 +88,5 @@ class Ball:
         self.set_velocity(0, 0)
         self.set_position((self.origin_x, self.origin_y))
         self.health = 1
-
-    def reset_hit_count(self):
-        """ Reset the hit count of the ball """
+        self.old_hit_count = self.hit_count
         self.hit_count = 0
