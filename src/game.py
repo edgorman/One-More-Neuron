@@ -11,16 +11,16 @@ SCREEN_HEIGHT = 720
 
 GAME_TICK_SPEED = 60
 
-BALL_RADIUS = 10
-BALL_START_X = 600
-BALL_START_Y = 700
-
 BLOCK_WIDTH = 70
 BLOCK_WIDTH_MAX = 16
 BLOCK_HEIGHT = 70
 BLOCK_HEIGHT_MAX = 9
 BLOCK_BETWEEN_GAP = 5
 BLOCK_SPAWN_THRESHOLD = 0.75
+
+BALL_RADIUS = 10
+BALL_START_X = ((BLOCK_WIDTH_MAX+1)/2) * BLOCK_WIDTH
+BALL_START_Y = (BLOCK_HEIGHT_MAX+1) * BLOCK_HEIGHT
 
 
 class Game:
@@ -66,10 +66,10 @@ class Game:
         if event.type == pygame.MOUSEBUTTONUP:
             if not self.level_active:
                 # Level is not active
-                ball_vec = pygame.math.Vector2(BALL_START_X, BALL_START_Y)
-                mouse_vec = pygame.math.Vector2(pygame.mouse.get_pos())
-                shot_vec = pygame.math.Vector2(ball_vec - mouse_vec)
-                shot_vec.normalize_ip()
+                ball_pos = pygame.math.Vector2(BALL_START_X, BALL_START_Y)
+                mouse_pos = pygame.math.Vector2(pygame.mouse.get_pos())
+                shot_vec = pygame.math.Vector2(ball_pos - mouse_pos)
+                shot_vec = shot_vec.normalize()
 
                 start_time = pygame.time.get_ticks()
                 x, y = shot_vec[0], shot_vec[1]
