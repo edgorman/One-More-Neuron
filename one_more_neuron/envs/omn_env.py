@@ -18,7 +18,7 @@ BLOCK_WIDTH_MAX = 16
 BLOCK_HEIGHT = 70
 BLOCK_HEIGHT_MAX = 9
 BLOCK_BETWEEN_GAP = 5
-BLOCK_SPAWN_THRESHOLD = 0.75
+BLOCK_SPAWN_THRESHOLD = 0.5
 
 BALL_RADIUS = 10
 BALL_START_X = ((BLOCK_WIDTH_MAX+1)/2) * BLOCK_WIDTH
@@ -44,12 +44,24 @@ class OMN(gym.Env):
         self.reward = 0
         self.actions = [x for x in range(10, 180, 10)]
 
+    def get_actions(self):
+        return self.actions
+
+    def get_n_actions(self):
+        return len(self.actions)
+
+    def get_obs_space(self):
+        return self._get_obs()
+
+    def get_level(self):
+        return self.level
+
     @property
     def _n_actions(self):
         return len(self.actions)
 
     def _get_obs(self):
-        # Convert environment to 1D array
+        # Convert environment to 2D np array
         env_array = np.zeros((BLOCK_HEIGHT_MAX * BLOCK_WIDTH_MAX), dtype=np.int8)
         block_indexes = []
 
@@ -62,6 +74,7 @@ class OMN(gym.Env):
 
         # Update array with block positions
         np.put(env_array, block_indexes, np.ones((len(block_indexes)), dtype=np.int8))
+        env_array = env_array.reshape(BLOCK_HEIGHT_MAX, BLOCK_WIDTH_MAX)
         return env_array
 
     def step(self, action):
@@ -204,7 +217,7 @@ class OMN(gym.Env):
                 self.game_running = False
 
         # Return observation, reward, done, info
-        return self._get_obs(), self.reward, int(self.game_running), None
+        return self._get_obs(), self.reward, int(not self.game_running), None
 
 
     def reset(self):
@@ -221,16 +234,11 @@ class OMN(gym.Env):
         return self._get_obs()
 
     def render(self, mode='human'):
-        print("One More Neuron. Level", self.level, "; Reward", self.reward)
-
-        # Get environment state
         state = self._get_obs()
 
-        for i in range (BLOCK_HEIGHT_MAX):
-            print(state[
-                (i * BLOCK_WIDTH_MAX):
-                (i * BLOCK_WIDTH_MAX) + BLOCK_WIDTH_MAX
-                ])
+        print("One More Neuron. Level", self.level, "; Reward", self.reward)
+        print(state)
+        print("----------------------------------")
 
     def close(self):
         print('close')

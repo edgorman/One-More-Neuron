@@ -2,6 +2,10 @@
 # Created by https://www.toptal.com/developers/gitignore/api/python,vscode,windows
 # Edit at https://www.toptal.com/developers/gitignore?templates=python,vscode,windows
 
+# One More Neuron
+models
+models/*
+
 ### Python ###
 # Byte-compiled / optimized / DLL files
 __pycache__/
